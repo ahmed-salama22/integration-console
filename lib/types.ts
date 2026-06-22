@@ -97,7 +97,38 @@ export interface NetfeedrUpdaterResponse {
   rate_limit: { calls_used: number; calls_free: number };
 }
 
+// ── eMedia (TV & Radio) types ───────────────
+
+export interface EMediaChannel {
+  id: string | number;
+  name: string;
+  type?: string;
+  language?: string;
+  country?: string;
+  mediaType: number; // 1 = TV, 2 = Radio
+  owner?: string;
+  scope?: string;
+}
+
+export interface EMediaResponse {
+  data: EMediaChannel[];
+}
+
 // ── Normalized dashboard data ───────────────
+
+/** Broad bucket used for dashboard grouping + the usage-model badge. */
+export type VendorCategory = "social" | "data" | "messaging" | "infrastructure";
+export type UsageModel = "quota" | "rate-limited" | "fixed-subscription" | "unknown";
+
+export interface ChannelRow {
+  id: string | number;
+  name: string;
+  type: string; // "TV" | "FM Radio" | "AM Radio" | ...
+  mediaType: number; // 1 = TV, 2 = Radio
+  country?: string;
+  language?: string;
+  city?: string;
+}
 
 export interface QuotaMetric {
   label: string;
@@ -113,9 +144,11 @@ export interface QuotaMetric {
 }
 
 export interface VendorCardData {
-  vendor: "x" | "netfeedr";
+  vendor: "x" | "netfeedr" | "emedia" | "datashake";
   product: string;
   package?: string;
+  category: VendorCategory;
+  usageModel: UsageModel;
   status: "ok" | "warning" | "critical";
   primary: QuotaMetric;
   secondary: QuotaMetric[];
@@ -123,4 +156,10 @@ export interface VendorCardData {
   period?: { start: string; end: string; daysLeft: number };
   dailyUsage?: { date: string; value: number }[];
   appBreakdown?: { appId: string; appName: string; usage: number }[];
+  /** Fixed-subscription headline (e.g. eMedia "121 channels") shown instead of a gauge. */
+  headline?: { value: string; sub?: string };
+  /** Full item list for catalogue vendors (eMedia TV & Radio channels). */
+  channels?: ChannelRow[];
+  /** Placeholder cards (e.g. Datashake) render disabled — no live data yet. */
+  placeholder?: boolean;
 }

@@ -11,8 +11,8 @@ function pctEnv(name: string, fallback: number): number {
   return Number.isFinite(n) && n > 0 && n <= 1 ? n : fallback;
 }
 
-export const WARNING_PCT = pctEnv("NEXT_PUBLIC_ALERT_WARNING_PCT", 0.7);
-export const CRITICAL_PCT = pctEnv("NEXT_PUBLIC_ALERT_CRITICAL_PCT", 0.9);
+export const WARNING_PCT = pctEnv("NEXT_PUBLIC_ALERT_WARNING_PCT", 0.6);
+export const CRITICAL_PCT = pctEnv("NEXT_PUBLIC_ALERT_CRITICAL_PCT", 0.8);
 
 /** Status for a single used/limit pair. Over-limit is always critical. */
 export function evaluateStatus(used: number, limit: number): Status {

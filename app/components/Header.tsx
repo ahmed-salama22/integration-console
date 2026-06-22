@@ -3,19 +3,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import type { Environment } from "@/lib/types";
-import { ENVIRONMENTS } from "@/lib/types";
-import { useEnv } from "../EnvContext";
+
+const NAV = [
+  { href: "/", label: "Data Vendors" },
+  { href: "/ai-services", label: "AI Services" },
+  { href: "/infrastructure", label: "Infrastructure Services" },
+];
 
 export function Header() {
   const pathname = usePathname();
-  const { env, setEnv } = useEnv();
-  const onDashboard = pathname === "/";
 
   return (
     <header className="bg-navy text-white">
-      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-6">
+        <div className="flex items-center gap-4 shrink-0">
           <Image
             src="/lucidya-logo.png"
             alt="Lucidya"
@@ -24,39 +25,34 @@ export function Header() {
             className="brightness-0 invert"
           />
           <span className="text-sm font-medium text-blue-light opacity-60">/</span>
-          <span className="text-sm font-semibold tracking-wide">
-            Vendors Quota Tracker
-          </span>
-
-          {/* Environment dropdown — sits right next to the title */}
-          {onDashboard && (
-            <div className="relative ml-1">
-              <select
-                aria-label="Environment"
-                value={env}
-                onChange={(e) => setEnv(e.target.value as Environment)}
-                className="appearance-none bg-navy-light text-white text-sm font-medium rounded-md border border-white/20 pl-3 pr-8 py-1.5 cursor-pointer hover:border-white/40 focus:outline-none focus:ring-2 focus:ring-blue-light/40"
-              >
-                {ENVIRONMENTS.map((e) => (
-                  <option key={e.id} value={e.id} className="text-navy bg-white">
-                    {e.label}
-                  </option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-white/70 text-[10px]">
-                ▼
-              </span>
-            </div>
-          )}
+          <span className="text-sm font-semibold tracking-wide">Integrations Console</span>
         </div>
 
-        <nav className="flex items-center gap-5 text-sm">
-          <Link href="/" className="text-gray-300 hover:text-white transition-colors">
-            Dashboard
-          </Link>
+        <nav className="flex items-center gap-1 text-sm overflow-x-auto">
+          {NAV.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-1.5 rounded-md font-medium whitespace-nowrap transition-colors ${
+                  active
+                    ? "bg-white/10 text-white"
+                    : "text-gray-300 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <span className="mx-1 h-4 w-px bg-white/15" />
           <Link
             href="/settings"
-            className="text-gray-300 hover:text-white transition-colors"
+            className={`px-3 py-1.5 rounded-md font-medium whitespace-nowrap transition-colors ${
+              pathname === "/settings"
+                ? "bg-white/10 text-white"
+                : "text-gray-300 hover:text-white hover:bg-white/5"
+            }`}
           >
             Settings
           </Link>

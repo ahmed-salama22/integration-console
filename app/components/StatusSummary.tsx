@@ -60,6 +60,7 @@ export function StatusSummary({ data, errors, onSelect }: Props) {
   const alerts: { card: VendorCardData; status: Status; detail: string }[] = [];
 
   for (const card of data) {
+    if (card.placeholder) continue; // not live yet — don't count it
     const status = card.status; // primary-metric driven
     counts[status]++;
     if (status !== "ok") {

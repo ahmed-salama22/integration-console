@@ -48,7 +48,8 @@ export function normalizeChannels(raw: NetfeedrChannelsResponse): VendorCardData
   return {
     vendor: "netfeedr",
     product: "Channels API",
-    package: raw.product.package,
+    category: "data",
+    usageModel: "quota",
     status: evaluateStatus(raw.usage.channels_used, raw.limits.max_channels),
     primary: {
       label: "Active Channels",
@@ -98,7 +99,8 @@ export function normalizeSearch(raw: NetfeedrSearchResponse): VendorCardData {
   return {
     vendor: "netfeedr",
     product: "Search API",
-    package: raw.product.package,
+    category: "data",
+    usageModel: "quota",
     status: evaluateStatus(raw.usage.calls_used, raw.limits.max_calls_per_month),
     primary: {
       label: "API Calls",
@@ -150,7 +152,8 @@ export function normalizeUpdater(raw: NetfeedrUpdaterResponse): VendorCardData {
   return {
     vendor: "netfeedr",
     product: "Post Updater",
-    package: raw.product.package,
+    category: "data",
+    usageModel: "quota",
     status: evaluateStatus(raw.usage.updates_used, raw.limits.max_updates_per_month),
     primary: {
       label: "Updates",

@@ -9,6 +9,8 @@ import {
   fetchNetfeedrUpdater,
   normalizeUpdater,
 } from "@/lib/vendors/netfeedr";
+import { fetchEMedia, normalizeEMedia } from "@/lib/vendors/emedia";
+import { adaptDatashake } from "@/lib/vendors/datashake";
 import type { Environment, VendorCardData } from "@/lib/types";
 
 export async function GET(req: NextRequest) {
@@ -66,6 +68,24 @@ export async function GET(req: NextRequest) {
       errors.push({ vendor: "netfeedr", product: "Post Updater", message: msg });
     }
   }
+
+  // ── eMedia (TV & Radio) ────────────────────
+  if (configStatus.emedia) {
+    try {
+      const raw = await fetchEMedia(
+        config.emedia.apiUrl,
+        config.emedia.username,
+        config.emedia.password
+      );
+      results.push(normalizeEMedia(raw));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      errors.push({ vendor: "emedia", product: "eMedia (TV & Radio)", message: msg });
+    }
+  }
+
+  // ── Datashake (placeholder — awaiting vendor endpoint) ──
+  results.push(adaptDatashake());
 
   return NextResponse.json({
     environment: env,

@@ -21,6 +21,10 @@ const KEY_LABELS: Record<string, { label: string; envVar: (prefix: string) => st
     label: "Netfeedr Post Updater",
     envVar: (p) => `${p}_NETFEEDR_UPDATER_API_KEY`,
   },
+  emedia: {
+    label: "eMedia (TV & Radio)",
+    envVar: (p) => `${p}_EMEDIA_USERNAME`,
+  },
 };
 
 function EnvSection({

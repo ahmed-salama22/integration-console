@@ -4,10 +4,27 @@ import type { VendorCardData } from "@/lib/types";
 import { fmt, fmtCompact } from "@/lib/format";
 import { QuotaBar } from "./QuotaBar";
 import { StatusDot } from "./StatusDot";
-import { AppBreakdownChart } from "./AppBreakdownChart";
+import { AppDonutChart } from "./AppDonutChart";
+import { ChannelList } from "./ChannelList";
+import { UsageModelBadge } from "./UsageModelBadge";
 
 export function VendorCard({ card }: { card: VendorCardData }) {
   const isX = card.vendor === "x";
+  const showDonut = isX && !!card.appBreakdown && card.appBreakdown.length > 0;
+
+  // Placeholder (e.g. Datashake): disabled, dashed, awaiting the vendor endpoint.
+  if (card.placeholder) {
+    return (
+      <div className="rounded-lg border border-dashed border-gray-border bg-white/60 opacity-60 px-5 py-4 flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-navy">{card.product}</h3>
+          <UsageModelBadge model="unknown" />
+        </div>
+        <p className="text-xs text-gray-text">Awaiting vendor endpoint</p>
+      </div>
+    );
+  }
+
   const status = card.status; // primary-metric driven
 
   // Subtle left accent so a card in trouble is identifiable at a glance.
@@ -36,6 +53,7 @@ export function VendorCard({ card }: { card: VendorCardData }) {
               {card.package}
             </span>
           )}
+          <UsageModelBadge model={card.usageModel} />
         </div>
         {card.period && (
           <span className="text-xs text-gray-text font-mono">
@@ -44,30 +62,46 @@ export function VendorCard({ card }: { card: VendorCardData }) {
         )}
       </div>
 
-      {/* Primary metric */}
-      <div className="px-5 pt-4 pb-3">
-        <p className="text-xs text-gray-text uppercase tracking-wider mb-1">
-          {card.primary.label}
-        </p>
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-navy tabular-nums">
-            {fmtCompact(card.primary.used)}
-          </span>
-          <span className="text-sm text-gray-text">
-            / {fmtCompact(card.primary.limit)}
-          </span>
-          {overLimit && (
-            <span className="text-xs font-semibold text-red">
-              over by {fmt(card.primary.used - card.primary.limit)}
-            </span>
+      {/* Headline (fixed-subscription) OR primary gauge */}
+      {card.headline ? (
+        <div className="px-5 pt-4 pb-3">
+          <p className="text-2xl font-bold text-navy tabular-nums">
+            {card.headline.value}
+          </p>
+          {card.headline.sub && (
+            <p className="text-sm text-gray-text mt-1">{card.headline.sub}</p>
           )}
         </div>
-        <QuotaBar used={card.primary.used} limit={card.primary.limit} />
-      </div>
+      ) : (
+        <div className="px-5 pt-4 pb-3 flex flex-col lg:flex-row lg:items-center gap-6">
+          {/* Primary metric */}
+          <div className="lg:flex-1 lg:min-w-0">
+            <p className="text-xs text-gray-text uppercase tracking-wider mb-1">
+              {card.primary.label}
+            </p>
+            <div className="flex items-baseline gap-2 mb-2">
+              <span className="text-2xl font-bold text-navy tabular-nums">
+                {fmtCompact(card.primary.used)}
+              </span>
+              <span className="text-sm text-gray-text">
+                / {fmtCompact(card.primary.limit)}
+              </span>
+              {overLimit && (
+                <span className="text-xs font-semibold text-red">
+                  over by {fmt(card.primary.used - card.primary.limit)}
+                </span>
+              )}
+            </div>
+            <QuotaBar used={card.primary.used} limit={card.primary.limit} />
+          </div>
 
-      {/* App breakdown (X only) */}
-      {isX && card.appBreakdown && card.appBreakdown.length > 0 && (
-        <AppBreakdownChart apps={card.appBreakdown} />
+          {/* Recommended chart — X app split, sits beside Posts Consumed */}
+          {showDonut && (
+            <div className="lg:shrink-0 lg:border-l lg:border-gray-border lg:pl-6">
+              <AppDonutChart apps={card.appBreakdown!} />
+            </div>
+          )}
+        </div>
       )}
 
       {/* Secondary metrics */}
@@ -90,6 +124,11 @@ export function VendorCard({ card }: { card: VendorCardData }) {
             );
           })}
         </div>
+      )}
+
+      {/* Full channel list (eMedia TV & Radio) */}
+      {card.channels && card.channels.length > 0 && (
+        <ChannelList channels={card.channels} />
       )}
 
       {/* Rate limit footer */}

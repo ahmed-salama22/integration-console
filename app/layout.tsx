@@ -4,8 +4,9 @@ import { EnvProvider } from "./EnvContext";
 import { Header } from "./components/Header";
 
 export const metadata: Metadata = {
-  title: "Vendors Quota Tracker — Lucidya",
-  description: "Monitor data vendor usage across environments",
+  title: "Integrations Console — Lucidya",
+  description:
+    "Monitor data vendor usage, AI services, and infrastructure health",
 };
 
 export default function RootLayout({

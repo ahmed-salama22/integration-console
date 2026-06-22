@@ -66,6 +66,8 @@ export function normalizeXUsage(
   return {
     vendor: "x",
     product: "X Posts",
+    category: "social",
+    usageModel: "quota",
     status: evaluateStatus(used, cap),
     primary: {
       label: "Posts Consumed",

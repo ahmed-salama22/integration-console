@@ -35,10 +35,11 @@ export function DailyTrendCard({ data }: DailyTrendCardProps) {
           {data.map((d, i) => {
             const barH = Math.max(Math.round((d.value / max) * 104), 3);
             return (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-                <span className="text-[10px] font-mono text-gray-text opacity-0 group-hover:opacity-100 transition-opacity tabular-nums">
-                  {fmt(d.value)}
-                </span>
+              <div
+                key={i}
+                className="flex-1 flex flex-col items-center justify-end"
+                title={`${d.date.split("T")[0]} — ${fmt(d.value)}`}
+              >
                 <div
                   className="w-full min-w-[6px] max-w-[28px] rounded-sm bg-blue-mid/70 hover:bg-blue-mid transition-colors cursor-default"
                   style={{ height: `${barH}px` }}

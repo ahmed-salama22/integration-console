@@ -10,6 +10,11 @@ export interface EnvConfig {
     searchApiKey: string;
     updaterApiKey: string;
   };
+  emedia: {
+    apiUrl: string;
+    username: string;
+    password: string;
+  };
 }
 
 export function getEnvConfig(env: Environment): EnvConfig {
@@ -33,6 +38,13 @@ export function getEnvConfig(env: Environment): EnvConfig {
       searchApiKey: process.env[`${prefix}_NETFEEDR_SEARCH_API_KEY`] || "",
       updaterApiKey: process.env[`${prefix}_NETFEEDR_UPDATER_API_KEY`] || "",
     },
+    emedia: {
+      apiUrl:
+        process.env[`${prefix}_EMEDIA_API_URL`] ||
+        "https://dart.emediamonitor.net/api/channels",
+      username: process.env[`${prefix}_EMEDIA_USERNAME`] || "",
+      password: process.env[`${prefix}_EMEDIA_PASSWORD`] || "",
+    },
   };
 }
 
@@ -44,5 +56,8 @@ export function getConfigStatus(env: Environment) {
     netfeedrChannels: !!process.env[`${prefix}_NETFEEDR_CHANNELS_API_KEY`],
     netfeedrSearch: !!process.env[`${prefix}_NETFEEDR_SEARCH_API_KEY`],
     netfeedrUpdater: !!process.env[`${prefix}_NETFEEDR_UPDATER_API_KEY`],
+    emedia:
+      !!process.env[`${prefix}_EMEDIA_USERNAME`] &&
+      !!process.env[`${prefix}_EMEDIA_PASSWORD`],
   };
 }
