@@ -12,7 +12,7 @@ into a unified UI. No database, no persisted state.
 
 ```bash
 npm install               # install dependencies
-cp .env.example .env.local # copy env template and fill in your keys
+cp .env.example .env.local # copy env template and fill in your keys - no dashboard without keys ( except AI because it doesn't have keys right now)
 vim .env.local            # add vendor / AI / infra credentials
 npm run dev               # start dev server
 ```
