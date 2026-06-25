@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 interface ConfigStatus {
   cxm: Record<string, boolean>;
   site: Record<string, boolean>;
+  litellm?: { staging: boolean; production: boolean };
 }
 
 const KEY_LABELS: Record<string, { label: string; envVar: (prefix: string) => string }> = {
@@ -127,10 +128,41 @@ cap_reset_day,project_cap,project_id,project_usage" \\
 
       {/* ── Environment cards ───────────────── */}
       {status ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <EnvSection title="Lucidya CXM" prefix="CXM" status={status.cxm} />
-          <EnvSection title="Site" prefix="SITE" status={status.site} />
-        </div>
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <EnvSection title="Lucidya CXM" prefix="CXM" status={status.cxm} />
+            <EnvSection title="Site" prefix="SITE" status={status.site} />
+          </div>
+
+          {/* AI Services (LiteLLM) — two self-hosted proxies, one per env */}
+          <div className="mt-6 bg-white rounded-lg border border-gray-border overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-border">
+              <h3 className="text-sm font-semibold text-navy">AI Services — LiteLLM proxies</h3>
+            </div>
+            <div className="divide-y divide-gray-border">
+              {[
+                { label: "Staging", prefix: "STAGING", on: status.litellm?.staging },
+                { label: "Production", prefix: "PROD", on: status.litellm?.production },
+              ].map((row) => (
+                <div key={row.prefix} className="px-5 py-3.5 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-navy">{row.label}</p>
+                    <p className="text-xs text-gray-text font-mono mt-0.5">
+                      LITELLM_{row.prefix}_PROXY_URL · LITELLM_{row.prefix}_API_KEY
+                    </p>
+                  </div>
+                  <span
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+                      row.on ? "bg-[#dcfce7] text-[#15803d]" : "bg-gray-bg text-gray-text"
+                    }`}
+                  >
+                    {row.on ? "Configured" : "Not set"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       ) : (
         <div className="text-center py-8 text-sm text-gray-text">
           Loading configuration status…
